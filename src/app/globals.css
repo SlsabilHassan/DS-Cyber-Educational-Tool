@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ── Design tokens ───────────────────────────────────────────────
+   Sleek dark theme: near-black canvas, soft glows, one restrained
+   green accent for the "cyber" identity. Each --color-* is a Tailwind
+   utility (bg-bg, text-accent, border-border, …). */
+@theme {
+  --color-bg: #050506;
+  --color-surface: #0d0d10;
+  --color-surface-2: #17171b;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-fg: #f4f4f6;
+  --color-muted: #8b8b94;
+  --color-accent: #4ade80; /* emerald — glows, highlights, active */
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* Radial spotlight behind the hero */
+.spotlight {
+  background:
+    radial-gradient(
+      55% 45% at 50% 0%,
+      rgba(74, 222, 128, 0.1) 0%,
+      rgba(74, 222, 128, 0) 60%
+    ),
+    radial-gradient(
+      35% 35% at 50% 5%,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+}
+
+/* Softly fade the animated node network toward the edges so it blends
+   into the background instead of ending in a hard rectangle. */
+.node-fade {
+  -webkit-mask-image: radial-gradient(
+    70% 75% at 50% 28%,
+    #000 25%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    70% 75% at 50% 28%,
+    #000 25%,
+    transparent 100%
+  );
+}
+
+/* New stack items slide/fade in when pushed */
+@keyframes stackIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.stack-item-enter {
+  animation: stackIn 170ms ease-out;
+}
+
+/* Shake used when the hijacked return address crashes the program */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+.animate-shake {
+  animation: shake 320ms ease-in-out;
+}
+
+/* Strip the default <details> marker so the FAQ can use a custom +/× */
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
