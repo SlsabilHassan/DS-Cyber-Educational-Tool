@@ -5,6 +5,10 @@
 // fully authored in ./stack-challenges.
 
 import { stackChallenges } from "./stack-challenges";
+import { queueChallenges } from "./queue-challenges";
+import { linkedlistChallenges } from "./linkedlist-challenges";
+import { treeChallenges } from "./tree-challenges";
+import { graphChallenges } from "./graph-challenges";
 
 export type Challenge = {
   id: string;
@@ -74,11 +78,8 @@ export const modules: Module[] = [
     blurb:
       "First in, first out. The structure behind task schedulers, packet buffers, and rate limiters.",
     description:
-      "Queues model anything that waits its turn: print jobs, network packets, request pipelines. Learn FIFO operations and how queues power rate limiting and denial-of-service defenses.",
-    challenges: [
-      { id: "fifo", name: "First In, First Out", points: 10 },
-      { id: "ring", name: "Circular Buffer", points: 30 },
-    ],
+      "Queues model anything that waits its turn: print jobs, network packets, request pipelines. Learn FIFO operations and how queues power rate limiting and denial-of-service defenses. This module has eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: queueChallenges,
   },
   {
     slug: "linked-labyrinth",
@@ -89,12 +90,8 @@ export const modules: Module[] = [
     blurb:
       "Follow the pointers. Where nodes live anywhere, dangling references become exploits.",
     description:
-      "Linked lists trade contiguous memory for flexible pointers. Learn traversal, insertion, and deletion — then see how a freed-but-still-referenced node leads to use-after-free vulnerabilities.",
-    challenges: [
-      { id: "traverse", name: "Follow the Chain", points: 15 },
-      { id: "insert", name: "Splice a Node", points: 30 },
-      { id: "uaf", name: "Dangling Pointer", points: 75 },
-    ],
+      "Linked lists trade contiguous memory for flexible pointers. Learn traversal, insertion, and deletion — then see how a freed-but-still-referenced node leads to use-after-free vulnerabilities. Eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: linkedlistChallenges,
   },
   {
     slug: "hash-heist",
@@ -121,11 +118,8 @@ export const modules: Module[] = [
     blurb:
       "Branch out into search trees, parsers, and the structures behind decision-making.",
     description:
-      "Trees model hierarchy and ordered data. Learn binary search trees, traversals, and balancing — then connect them to parsers, file systems, and the decision trees used in detection systems.",
-    challenges: [
-      { id: "bst", name: "Binary Search Tree", points: 20 },
-      { id: "traverse", name: "Walk the Tree", points: 30 },
-    ],
+      "Trees model hierarchy and ordered data — file systems, permission trees, parsers, Merkle proofs. Eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: treeChallenges,
   },
   {
     slug: "graph-gauntlet",
@@ -136,12 +130,8 @@ export const modules: Module[] = [
     blurb:
       "Nodes and edges everywhere — model networks, dependencies, and the paths an attacker takes.",
     description:
-      "Graphs represent relationships: social networks, package dependencies, and computer networks. Learn representations and traversal (BFS/DFS), then use them to reason about lateral movement and attack-path analysis.",
-    challenges: [
-      { id: "bfs", name: "Breadth First", points: 20 },
-      { id: "dfs", name: "Depth First", points: 20 },
-      { id: "path", name: "Shortest Attack Path", points: 60 },
-    ],
+      "Graphs represent relationships: social networks, package dependencies, trust between services, and computer networks. Eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: graphChallenges,
   },
   {
     slug: "heap-havoc",
