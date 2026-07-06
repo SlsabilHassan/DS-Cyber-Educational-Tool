@@ -9,6 +9,8 @@ import { queueChallenges } from "./queue-challenges";
 import { linkedlistChallenges } from "./linkedlist-challenges";
 import { treeChallenges } from "./tree-challenges";
 import { graphChallenges } from "./graph-challenges";
+import { arrayChallenges } from "./array-challenges";
+import { hashtableChallenges } from "./hashtable-challenges";
 
 export type Challenge = {
   id: string;
@@ -50,12 +52,8 @@ export const modules: Module[] = [
     blurb:
       "How contiguous memory really works — and what happens when you read or write one cell too far.",
     description:
-      "Arrays are the foundation of almost every other structure. In this module you'll learn how they're laid out in memory, why indexing is O(1), and how off-by-one mistakes turn into out-of-bounds reads and writes that attackers love.",
-    challenges: [
-      { id: "intro", name: "Index Zero", points: 10 },
-      { id: "bounds", name: "Off By One", points: 25 },
-      { id: "oob", name: "Out of Bounds", points: 50 },
-    ],
+      "Arrays are the foundation of almost every other structure — contiguous memory accessed by index. Eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: arrayChallenges,
   },
   {
     slug: "stack-smashing",
@@ -102,12 +100,8 @@ export const modules: Module[] = [
     blurb:
       "O(1) lookups, collisions, and why how you hash a password decides whether it's safe.",
     description:
-      "Hash tables give near-constant lookups by mapping keys to buckets. Learn hash functions, collision handling, and the security side: salting, slow hashes, and why cryptographic hashing matters for stored credentials.",
-    challenges: [
-      { id: "buckets", name: "Into the Buckets", points: 15 },
-      { id: "collide", name: "Collision Course", points: 35 },
-      { id: "crack", name: "Crack the Hash", points: 75 },
-    ],
+      "Hash tables give near-constant lookups by mapping keys to buckets. Eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: hashtableChallenges,
   },
   {
     slug: "tree-trojan",

@@ -17,9 +17,21 @@ An interactive web platform that teaches **data structures through the lens of c
 - **Detailed solutions.** Every challenge includes an on-request walkthrough plus one working solution.
 - **Progress tracking.** Solved challenges are remembered locally in the browser.
 
-## The current module: *Stack Smashing*
+## Modules
 
-A full module on the **stack** and its security implications, with an interactive lesson and eight hands-on challenges covering buffer overflows, secrets left in memory, undo-history leaks, replay attacks, the confused-deputy problem, recursion-based denial of service, traceback information disclosure, and timing side channels.
+Seven data-structure modules are fully built — each with an interactive lesson and **8 hands-on, auto-graded challenges** (56 in total):
+
+| Module | Data structure | Sample vulnerabilities |
+|---|---|---|
+| Array Armory | Arrays | out-of-bounds writes, ghost elements, unbounded growth, concurrent resize |
+| Stack Smashing | Stacks | buffer overflow, stale secrets, replay, recursion DoS, timing side channel |
+| Queue Quarantine | Queues | overflow, priority bypass, replay, poisoning, race conditions |
+| Linked Labyrinth | Linked Lists | pointer corruption, use-after-free, cycle injection, hash-chain tampering |
+| Hash Heist | Hash Tables | bucket corruption, key poisoning, collision DoS, concurrent rehash |
+| Tree Trojan | Trees | path traversal, ACL inheritance, recursive DoS, Merkle tampering |
+| Graph Gauntlet | Graphs | untrusted nodes, trust propagation, cyclic traversal DoS, integrity hashes |
+
+A **Heap** module is on the way.
 
 ---
 
@@ -77,10 +89,10 @@ src/
 │   ├── ChallengeWorkbench.tsx   # in-browser code editor + runner
 │   └── ...                  # header, footer, cards, icons, etc.
 └── lib/
-    ├── modules.ts           # module + challenge data model
-    ├── stack-challenges.ts  # the Stack module's content
-    ├── pyodide.ts           # loads Pyodide + runs tests in the browser
-    └── progress.ts          # local progress tracking
+    ├── modules.ts               # module registry + challenge data model
+    ├── <structure>-challenges.ts # one file per module (stack, queue, tree, …)
+    ├── pyodide.ts               # loads Pyodide + runs tests in the browser
+    └── progress.ts              # local progress tracking
 ```
 
 Content is **data-driven**: modules, challenges, hints, and solutions live in typed data files, and the pages are generated from them — adding content is a data change, not new UI code.
