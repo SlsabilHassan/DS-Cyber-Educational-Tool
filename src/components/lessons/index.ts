@@ -6,6 +6,7 @@ import { TreeLesson } from "./TreeLesson";
 import { GraphLesson } from "./GraphLesson";
 import { ArrayLesson } from "./ArrayLesson";
 import { HashTableLesson } from "./HashTableLesson";
+import { HeapLesson } from "./HeapLesson";
 
 // Maps a module slug to its "learn first" lesson component. Add an entry here
 // to give any module an educational primer above its challenges.
@@ -17,4 +18,5 @@ export const lessons: Record<string, ComponentType> = {
   "graph-gauntlet": GraphLesson,
   "array-armory": ArrayLesson,
   "hash-heist": HashTableLesson,
+  "heap-havoc": HeapLesson,
 };

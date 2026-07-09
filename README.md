@@ -19,7 +19,7 @@ An interactive web platform that teaches **data structures through the lens of c
 
 ## Modules
 
-Seven data-structure modules are fully built — each with an interactive lesson and **8 hands-on, auto-graded challenges** (56 in total):
+Eight data-structure modules are fully built — each with an interactive lesson and **8 hands-on, auto-graded challenges** (64 in total):
 
 | Module | Data structure | Sample vulnerabilities |
 |---|---|---|
@@ -30,8 +30,7 @@ Seven data-structure modules are fully built — each with an interactive lesson
 | Hash Heist | Hash Tables | bucket corruption, key poisoning, collision DoS, concurrent rehash |
 | Tree Trojan | Trees | path traversal, ACL inheritance, recursive DoS, Merkle tampering |
 | Graph Gauntlet | Graphs | untrusted nodes, trust propagation, cyclic traversal DoS, integrity hashes |
-
-A **Heap** module is on the way.
+| Heap Havoc | Heaps & Priority Queues | priority corruption, escalation, heap flooding, invariant tampering |
 
 ---
 

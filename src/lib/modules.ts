@@ -11,6 +11,7 @@ import { treeChallenges } from "./tree-challenges";
 import { graphChallenges } from "./graph-challenges";
 import { arrayChallenges } from "./array-challenges";
 import { hashtableChallenges } from "./hashtable-challenges";
+import { heapChallenges } from "./heap-challenges";
 
 export type Challenge = {
   id: string;
@@ -136,11 +137,8 @@ export const modules: Module[] = [
     blurb:
       "Priority where it matters — and the allocator internals behind a whole class of exploits.",
     description:
-      "Heaps keep the highest-priority item reachable in O(log n) and power priority queues and schedulers. We'll also peek at the memory allocator's heap and the metadata-corruption bugs that make heap exploitation its own art.",
-    challenges: [
-      { id: "heapify", name: "Heapify", points: 25 },
-      { id: "pq", name: "Priority Queue", points: 35 },
-    ],
+      "Heaps keep the highest-priority item reachable in O(log n) and power priority queues and schedulers. Eight hands-on challenges — fix the vulnerable code until the tests pass.",
+    challenges: heapChallenges,
   },
 ];
 
