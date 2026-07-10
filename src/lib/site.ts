@@ -3,12 +3,13 @@
 // highlighted dot, in the pwn.college style.
 
 export const SITE = {
-  name: "StructSec",
-  logoLeft: "struct",
-  logoRight: "sec",
+  name: "Hacky Stacky",
+  logoLeft: "Hacky",
+  logoRight: "Stacky",
+  mascot: "Sudo", // the node-creature tutor's name
   tagline: "Learn data structures through the lens of cybersecurity.",
   description:
-    "An interactive dojo that teaches data structures by hacking, defending, and exploiting them.",
+    "An interactive playground that teaches data structures by hacking, defending, and exploiting them.",
 };
 
 export type NavItem = { label: string; href: string };

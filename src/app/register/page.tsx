@@ -1,9 +1,8 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import type { Metadata } from "next";
+import { AuthForm } from "@/components/AuthForm";
 
-export const metadata = { title: "Register" };
+export const metadata: Metadata = { title: "Sign up" };
 
-export default function Page() {
-  return (
-    <ComingSoon title="Register" note="Account creation will be added here." />
-  );
+export default function RegisterPage() {
+  return <AuthForm mode="register" />;
 }

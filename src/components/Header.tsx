@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV } from "@/lib/site";
 import { Logo } from "./Logo";
+import { useAuth } from "./AuthProvider";
 
 // Floating pill navbar, in the reference style.
 export function Header() {
   const pathname = usePathname();
+  const { user, loading, signOut } = useAuth();
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
 
@@ -33,18 +35,34 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <Link
-            href="/login"
-            className="hidden text-sm text-muted transition-colors hover:text-fg sm:block"
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-fg px-4 py-2 text-sm font-medium text-bg transition-opacity hover:opacity-90"
-          >
-            Get started
-          </Link>
+          {loading ? null : user ? (
+            <>
+              <span className="hidden max-w-[10rem] truncate text-sm text-muted sm:block">
+                {user.email}
+              </span>
+              <button
+                onClick={() => signOut()}
+                className="rounded-full border border-border px-4 py-2 text-sm text-fg transition-colors hover:border-white/25 hover:bg-white/5"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hidden text-sm text-muted transition-colors hover:text-fg sm:block"
+              >
+                Login
+              </Link>
+              <Link
+                href="/welcome"
+                className="rounded-full bg-fg px-4 py-2 text-sm font-medium text-bg transition-opacity hover:opacity-90"
+              >
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -7,6 +7,7 @@ import { FAQ } from "@/components/FAQ";
 import { SectionHeading } from "@/components/SectionHeading";
 import { HeroGlow } from "@/components/HeroGlow";
 import { Button } from "@/components/Button";
+import { Mascot } from "@/components/Mascot";
 
 export default function Home() {
   const modules = getOrderedModules();
@@ -14,11 +15,14 @@ export default function Home() {
   return (
     <div className="space-y-24 pb-4">
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 pt-28 pb-4 text-center">
+      <section className="relative overflow-hidden px-4 pt-20 pb-4 text-center">
         <HeroGlow />
+        <div className="mb-4 flex justify-center">
+          <Mascot size={128} />
+        </div>
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-          Interactive cybersecurity dojo
+          Interactive cybersecurity playground
         </span>
         <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight text-fg sm:text-6xl">
           Master data structures

@@ -94,6 +94,56 @@ body {
   animation: shake 320ms ease-in-out;
 }
 
+/* Mascot (Sudo) — the node-creature tutor that hops while it teaches */
+@keyframes mascotJump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-22px);
+  }
+}
+@keyframes mascotShadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scaleX(0.55);
+    opacity: 0.15;
+  }
+}
+@keyframes mascotBlink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.12);
+  }
+}
+.mascot-body {
+  animation: mascotJump 1.15s ease-in-out infinite;
+}
+.mascot-shadow {
+  animation: mascotShadow 1.15s ease-in-out infinite;
+}
+.mascot-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascotBlink 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mascot-body,
+  .mascot-shadow,
+  .mascot-eyes {
+    animation: none;
+  }
+}
+
 /* Strip the default <details> marker so the FAQ can use a custom +/× */
 details > summary {
   list-style: none;
