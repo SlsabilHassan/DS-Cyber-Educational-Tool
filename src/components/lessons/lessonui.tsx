@@ -1,5 +1,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { StartPlayerCard } from "@/components/StartPlayerCard";
+import { OpsCosts, UsesGrid } from "./FactsPanel";
+import { DS_FACTS } from "@/lib/ds-facts";
 
 // Shared building blocks so every module lesson looks and reads exactly like
 // the Stack lesson: eyebrow → intro → hands-on hero → the "patterns" section
@@ -171,6 +173,7 @@ export function ModuleLesson({
   glossary: GlossaryItem[];
   closing: string;
 }) {
+  const facts = slug ? DS_FACTS[slug] : undefined;
   return (
     <section className="rounded-2xl border border-border bg-surface p-6 sm:p-8">
       <Eyebrow>Learn first — no prior knowledge needed</Eyebrow>
@@ -182,6 +185,34 @@ export function ModuleLesson({
       <div className="mt-4 space-y-4 leading-relaxed text-muted">{intro}</div>
 
       {tryIt && <div className="mt-8">{tryIt}</div>}
+
+      {facts && (
+        <>
+          <h3 className="mt-12 text-xl font-semibold tracking-tight text-fg">
+            How fast is it?
+          </h3>
+          <p className="mt-2 leading-relaxed text-muted">
+            <span className="font-mono text-accent">O(1)</span>{" "}
+            means the cost stays the same at any size;{" "}
+            <span className="font-mono text-amber-400">O(n)</span>{" "}
+            means it grows with the data. Each operation below comes with the
+            reason why — the costs are the point, not the trivia.
+          </p>
+          <div className="mt-5">
+            <OpsCosts ops={facts.ops} />
+          </div>
+
+          <h3 className="mt-12 text-xl font-semibold tracking-tight text-fg">
+            Where you&apos;ve already met one
+          </h3>
+          <p className="mt-2 leading-relaxed text-muted">
+            Once you know the shape, you&apos;ll spot it everywhere:
+          </p>
+          <div className="mt-5">
+            <UsesGrid uses={facts.uses} />
+          </div>
+        </>
+      )}
 
       <h3
         id="six-patterns"

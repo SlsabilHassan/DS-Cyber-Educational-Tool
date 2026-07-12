@@ -1,8 +1,9 @@
-# DS-Cyber Educational Tool
-Still building ⚠️
-Check it through here: https://ds-cyber-educational-tool.vercel.app/
+# Hacky Stacky
 
-An interactive web platform that teaches **data structures through the lens of cybersecurity**. Learners work through hands-on modules that pair each data structure with the vulnerabilities and defenses it unlocks — reading friendly explanations, playing with interactive visualizations, and then **writing and running real code fixes directly in the browser**.
+Still building ⚠️
+Try it here: https://ds-cyber-educational-tool.vercel.app/
+
+An interactive web platform that teaches **data structures through the lens of cybersecurity** — Brilliant meets Duolingo, with a hacker twist. Learners meet each data structure from scratch, build real intuition through hands-on visualizations and quizzes, then **write and run real code fixes directly in the browser** against live-graded vulnerabilities. Your guide throughout is **Sudo**, the friendly node-shaped mascot.
 
 > **Research project** developed under the supervision of **Professor Sana Habib** at **Washington and Lee University**.
 
@@ -10,16 +11,18 @@ An interactive web platform that teaches **data structures through the lens of c
 
 ## What it does
 
-- **Learn-first lessons.** Each module opens with a plain-language primer built for someone who has never seen the concept before — analogies, worked explanations, and a glossary.
-- **Interactive visualizations.** Custom, hands-on demos: a live push/pop stack, a "break the stack" buffer-overflow playground, and a dedicated interactive for each security pattern (stale memory, redaction, replay, authorization, recursion depth).
-- **Code in the browser.** A built-in editor lets students edit vulnerable starter code and **run a real test suite against it live** — no terminal, no installation. Grading happens by executing Python in the browser.
-- **Progressive hints.** Stuck learners can reveal hints one at a time, from a gentle nudge to a concrete technique — without being handed the answer.
-- **Detailed solutions.** Every challenge includes an on-request walkthrough plus one working solution.
-- **Progress tracking.** Solved challenges are remembered locally in the browser.
+- **Learn the structure first — properly.** Before any security, each module teaches the data structure the way the best interactive courses do: one idea per screen, a real-world analogy, a memory model, and — crucially — a **"How fast is it?"** breakdown that gives every operation its Big-O *and the plain-English reason why* (why array reads are O(1), why a middle-insert is O(n)). A **"Where you've already met one"** grid anchors each structure to things learners use every day (the call stack, the browser back button, printers, GPS, dictionaries…).
+- **Predict, then verify.** Interactive **"Quick check" quizzes** make learners commit to an answer before moving on — wrong picks get specific feedback, and the lesson only advances once they've got it. Learning by doing, not by watching.
+- **Interactive visualizations.** Custom hands-on demos: a live push/pop stack, a "break the stack" buffer-overflow playground, and a dedicated interactive for each security pattern (stale memory, redaction, replay, authorization, recursion depth, and more).
+- **Two ways to learn, your choice.** Every module can be read as one long page, or played as a **three-part stepped lesson** with Sudo — _the basics_, _the safety patterns_, and _a guided challenge run_ — with a progress bar, XP, and bite-sized steps. The entry cards sit above each section; the full page is always there if you'd rather scroll.
+- **Code in the browser.** A built-in editor lets students edit vulnerable starter code and **run a real test suite against it live** — no terminal, no installation. Grading happens by executing Python in the browser via WebAssembly.
+- **Sequential unlocking.** Challenges open one at a time: pass the current one to unlock the next. Progressive hints reveal one at a time, and a **"Stuck for good?"** panel shows a full walkthrough and a working solution — studying it counts as finishing, so a genuinely stuck learner can always move on.
+- **Accounts and progress.** Optional email/password sign-in (Supabase); solved challenges are remembered in the browser.
+- **Help & search.** A Help center with an FAQ, a **direct-send contact form** (message the maintainer without leaving the page), and instant site-wide search across every module and challenge.
 
 ## Modules
 
-Eight data-structure modules are fully built — each with an interactive lesson and **8 hands-on, auto-graded challenges** (64 in total):
+Eight data-structure modules are fully built — each with an interactive lesson, a three-part stepped player, and **8 hands-on, auto-graded challenges** (64 in total):
 
 | Module | Data structure | Sample vulnerabilities |
 |---|---|---|
@@ -43,9 +46,11 @@ Eight data-structure modules are fully built — each with an interactive lesson
 | Language | [TypeScript](https://www.typescriptlang.org/) |
 | Styling | [Tailwind CSS 4](https://tailwindcss.com/) |
 | In-browser Python | [Pyodide](https://pyodide.org/) (CPython compiled to WebAssembly) |
+| Auth | [Supabase](https://supabase.com/) (email/password, optional) |
+| Contact form | [FormSubmit](https://formsubmit.co/) (serverless email relay) |
 | Tooling | ESLint, Node.js |
 
-**No backend and no database.** The entire site is statically generated and runs client-side, so it can be hosted on any static host. Student code execution and grading happen in the browser via WebAssembly; progress is stored in `localStorage`.
+**No traditional backend and no database of our own.** The site is statically generated and runs client-side, so it can be hosted on any static host. Student code execution and grading happen in the browser via WebAssembly; progress is stored in `localStorage`; auth and contact use hosted services.
 
 ## How the in-browser grading works
 
@@ -71,30 +76,50 @@ npm run build
 npm run start
 ```
 
+### Environment variables (optional)
+
+Auth is disabled gracefully if these are unset. To enable Supabase sign-in, copy `.env.local.example` to `.env.local` and fill in:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
 ## Project structure
 
 ```
 src/
-├── app/                     # Next.js routes (pages)
-│   ├── page.tsx             # home page
+├── app/                          # Next.js routes (pages)
+│   ├── page.tsx                  # home page
+│   ├── help/ · search/ · welcome/  # help center, search, onboarding
 │   └── modules/
-│       ├── page.tsx         # module index
+│       ├── page.tsx              # module index
 │       └── [slug]/
-│           ├── page.tsx     # module detail + lesson
-│           └── [challengeId]/page.tsx   # a single challenge
+│           ├── page.tsx          # module detail + long-scroll lesson
+│           ├── learn/            # three-part stepped lesson player
+│           │   ├── page.tsx      # part chooser
+│           │   └── [part]/       # basics · patterns · challenges
+│           └── [challengeId]/page.tsx   # a single challenge (locked in sequence)
 ├── components/
-│   ├── lessons/             # lesson content + interactive teaching demos
-│   │   └── interactives/    # per-pattern interactive visualizations
-│   ├── ChallengeWorkbench.tsx   # in-browser code editor + runner
-│   └── ...                  # header, footer, cards, icons, etc.
+│   ├── lessons/                  # lesson content + interactive teaching demos
+│   │   ├── interactives/         # per-pattern interactive visualizations
+│   │   ├── players/              # stepped-lesson players + per-module intros
+│   │   ├── LessonPlayer.tsx      # the Brilliant-style stepped player
+│   │   └── FactsPanel.tsx        # "how fast / where used" panels
+│   ├── Quiz.tsx                  # predict-before-you-continue check-ins
+│   ├── ChallengeWorkbench.tsx    # in-browser code editor + runner
+│   ├── ChallengeList.tsx · ChallengeGuard.tsx   # sequential unlocking
+│   ├── SolutionReveal.tsx        # "Stuck for good?" walkthrough
+│   └── HelpContact.tsx · SearchClient.tsx
 └── lib/
-    ├── modules.ts               # module registry + challenge data model
+    ├── modules.ts                # module registry + challenge data model
     ├── <structure>-challenges.ts # one file per module (stack, queue, tree, …)
-    ├── pyodide.ts               # loads Pyodide + runs tests in the browser
-    └── progress.ts              # local progress tracking
+    ├── ds-facts.ts               # operation costs + real-world uses per structure
+    ├── pyodide.ts                # loads Pyodide + runs tests in the browser
+    └── progress.ts               # local progress, sequential unlocking
 ```
 
-Content is **data-driven**: modules, challenges, hints, and solutions live in typed data files, and the pages are generated from them — adding content is a data change, not new UI code.
+Content is **data-driven**: modules, challenges, hints, solutions, and teaching facts live in typed data files, and the pages are generated from them — adding content is mostly a data change, not new UI code.
 
 ---
 

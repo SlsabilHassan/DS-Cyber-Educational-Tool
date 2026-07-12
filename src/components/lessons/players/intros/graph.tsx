@@ -3,6 +3,11 @@
 import type { LessonStep } from "../../LessonPlayer";
 import { Snippet } from "../../lessonui";
 import { GraphVisualizer } from "../../interactives/GraphVisualizer";
+import { Quiz } from "@/components/Quiz";
+import { OpsCosts, UsesGrid } from "../../FactsPanel";
+import { DS_FACTS } from "@/lib/ds-facts";
+
+const FACTS = DS_FACTS["graph-gauntlet"];
 
 export const graphIntroSteps: LessonStep[] = [
   {
@@ -17,11 +22,50 @@ export const graphIntroSteps: LessonStep[] = [
           <span className="text-fg">edge</span>.
         </p>
         <p>
-          That&apos;s a graph: nodes joined by edges, in any shape. Unlike a
-          tree, there&apos;s no single root — and connections can loop back on
-          each other.
+          That&apos;s a graph: nodes joined by edges, in any shape. It&apos;s the
+          most general structure here — a tree is just a graph with no loops
+          and one root; a linked list is a graph where each node has one edge.
         </p>
       </>
+    ),
+  },
+  {
+    title: "Directed, and cyclic",
+    sudo: "Arrows can be one-way. And loop.",
+    content: (
+      <>
+        <p>
+          Two things make graphs wilder than trees. Edges can be{" "}
+          <span className="text-fg">directed</span> (Alice follows Bob, but Bob
+          may not follow back), and they can form{" "}
+          <span className="text-fg">cycles</span> (A → B → C → A). That freedom
+          is why graphs model almost anything — and why traversing one is
+          trickier.
+        </p>
+        <Snippet
+          code={`graph = {
+    "Alice": ["Bob", "Eve"],   # Alice → Bob, Alice → Eve
+    "Bob":   ["Carol"],
+    "Carol": [],
+}`}
+        />
+      </>
+    ),
+  },
+  {
+    title: "The one rule of traversal",
+    sudo: "Forget this and loop forever.",
+    lock: true,
+    content: (
+      <Quiz
+        question="You explore a graph that has a cycle A → B → C → A. What must you track to avoid looping forever?"
+        options={[
+          { text: "Which nodes you've already visited", correct: true },
+          { text: "The total number of edges", note: "Counting edges won't stop you re-entering the cycle — you need to remember where you've been." },
+          { text: "Nothing — graphs can't have loops", note: "Graphs absolutely can loop; that's the whole danger. Trees can't, but graphs can." },
+        ]}
+        explain="Because graphs can cycle, every traversal keeps a 'visited' set and skips nodes already in it. Forget it and A → B → C → A spins forever — a real denial-of-service risk."
+      />
     ),
   },
   {
@@ -31,28 +75,34 @@ export const graphIntroSteps: LessonStep[] = [
       <>
         <p className="text-sm text-muted">
           Hit traverse and watch the graph get explored node by node — each
-          visited exactly once.
+          visited exactly once, thanks to that &quot;visited&quot; set.
         </p>
         <GraphVisualizer />
       </>
     ),
   },
   {
-    title: "The same thing, in code",
-    sudo: "A graph is a dict of who-knows-whom.",
+    title: "How fast is it?",
+    sudo: "Cheap to build, whole-graph to explore.",
     content: (
       <>
         <p>
-          The simplest graph is an <span className="text-fg">adjacency
-          list</span>: for each node, who it connects to.
+          Adding nodes and edges is <span className="font-mono text-accent">O(1)</span>.
+          But answering &quot;can I get from here to there?&quot; may mean
+          exploring the whole graph — <span className="font-mono text-amber-400">O(V + E)</span>,
+          every vertex and edge. That&apos;s the cost of freedom.
         </p>
-        <Snippet
-          code={`graph = {
-    "Alice": ["Bob", "Eve"],   # Alice is connected to Bob and Eve
-    "Bob":   ["Carol"],
-    "Carol": [],
-}`}
-        />
+        <OpsCosts ops={FACTS.ops} />
+      </>
+    ),
+  },
+  {
+    title: "Where graphs run the world",
+    sudo: "GPS is just graph search with style.",
+    content: (
+      <>
+        <p>Anything about relationships and connections is a graph:</p>
+        <UsesGrid uses={FACTS.uses} />
       </>
     ),
   },
@@ -62,12 +112,12 @@ export const graphIntroSteps: LessonStep[] = [
     content: (
       <div className="rounded-xl border border-accent/25 bg-accent/5 p-5">
         <p>
-          Social networks, package dependencies, trust between services — all
-          graphs. So is the map an attacker draws to{" "}
-          <span className="font-semibold">move through a network</span>: land on
-          one machine, follow the edges to the next. The patterns ahead are
-          about what you connect, how far trust flows, and always remembering
-          where you&apos;ve been.
+          To an attacker, your systems <span className="font-semibold">are</span>{" "}
+          a graph: land on one machine, follow the edges to the next, hunt for a
+          path to the crown jewels. Meanwhile a single unchecked edge can splice
+          a hostile node into a trusted graph, and a cycle can hang a traversal
+          forever. The patterns ahead guard what you connect, how far trust
+          flows, and where you&apos;ve already been.
         </p>
       </div>
     ),

@@ -10,6 +10,8 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { ChallengeWorkbench } from "@/components/ChallengeWorkbench";
 import { HintsPanel } from "@/components/HintsPanel";
 import { ShieldIcon } from "@/components/Icons";
+import { SolutionReveal } from "@/components/SolutionReveal";
+import { ChallengeGuard, NextChallengeLink } from "@/components/ChallengeGuard";
 
 export function generateStaticParams() {
   return getAllChallengeParams();
@@ -38,9 +40,19 @@ export default async function ChallengePage({
 
   const index = module.challenges.findIndex((c) => c.id === challenge.id);
   const nextChallenge = module.challenges[index + 1];
+  const prevChallenge = index > 0 ? module.challenges[index - 1] : null;
   const authored = Boolean(challenge.background || challenge.starterCode);
 
   return (
+    <ChallengeGuard
+      slug={module.slug}
+      moduleTitle={module.title}
+      prev={
+        prevChallenge
+          ? { id: prevChallenge.id, name: prevChallenge.name }
+          : null
+      }
+    >
     <div className="mx-auto max-w-3xl px-4 py-16">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-muted">
@@ -157,35 +169,17 @@ export default async function ChallengePage({
         </section>
       )}
 
-      {/* Detailed solution (hidden until asked for) */}
+      {/* Detailed solution (hidden until asked for; revealing unlocks the next) */}
       {challenge.solution && (
         <section className="mt-10">
-          <details
+          <SolutionReveal
             key={challenge.id}
-            className="group rounded-xl border border-border bg-surface"
-          >
-            <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-fg">
-              <span>Stuck for good? Reveal the detailed solution</span>
-              <span className="text-lg text-muted transition-transform group-open:rotate-45">
-                +
-              </span>
-            </summary>
-            <div className="space-y-4 border-t border-border p-5">
-              <ol className="space-y-2">
-                {challenge.solution.explanation.map((step, i) => (
-                  <li key={i} className="flex gap-3 text-sm leading-relaxed text-fg/90">
-                    <span className="font-medium text-accent">{i + 1}.</span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
-              <CodeBlock
-                code={challenge.solution.code}
-                filename="one working solution"
-                language={challenge.language}
-              />
-            </div>
-          </details>
+            slug={module.slug}
+            challengeId={challenge.id}
+            explanation={challenge.solution.explanation}
+            code={challenge.solution.code}
+            language={challenge.language}
+          />
         </section>
       )}
 
@@ -197,22 +191,17 @@ export default async function ChallengePage({
         >
           ← {module.title}
         </Link>
-        {nextChallenge ? (
-          <Link
-            href={`/modules/${module.slug}/${nextChallenge.id}`}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-90"
-          >
-            Next: {nextChallenge.name} →
-          </Link>
-        ) : (
-          <Link
-            href={`/modules/${module.slug}`}
-            className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm text-fg transition-colors hover:border-accent"
-          >
-            Finish — back to module
-          </Link>
-        )}
+        <NextChallengeLink
+          slug={module.slug}
+          challengeId={challenge.id}
+          next={
+            nextChallenge
+              ? { id: nextChallenge.id, name: nextChallenge.name }
+              : null
+          }
+        />
       </div>
     </div>
+    </ChallengeGuard>
   );
 }

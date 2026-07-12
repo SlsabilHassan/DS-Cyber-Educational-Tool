@@ -5,7 +5,7 @@ import type { LessonStep } from "../LessonPlayer";
 import type { Challenge } from "@/lib/modules";
 import { ChallengeWorkbench } from "@/components/ChallengeWorkbench";
 import { HintsPanel } from "@/components/HintsPanel";
-import { CodeBlock } from "@/components/CodeBlock";
+import { SolutionReveal } from "@/components/SolutionReveal";
 
 // Sudo's speech-bubble lines, rotated so consecutive steps don't repeat.
 // Punchy on purpose — Sudo has opinions.
@@ -66,10 +66,10 @@ export function challengesIntroStep(): LessonStep {
     sudo: "Hands on keyboard. This is the fun part.",
     content: (
       <p>
-        Eight real vulnerabilities. For each, fix the code and hit{" "}
-        <span className="text-accent">Run tests</span> — the step unlocks when
-        they pass (or skip for now and come back). Stuck? Reveal a hint. Your
-        solves are saved as you go.
+        Eight real vulnerabilities, one at a time. Fix the code and hit{" "}
+        <span className="text-accent">Run tests</span> — passing unlocks the
+        next one. Stuck? Take the hints. Truly stuck? Reveal the solution,
+        study it, and move on. Your progress is saved as you go.
       </p>
     ),
   };
@@ -118,32 +118,13 @@ export function buildChallengeSteps(
             language={ch.language}
           />
           {ch.solution && (
-            <details className="group rounded-xl border border-border bg-surface">
-              <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-fg">
-                <span>Stuck for good? Reveal the detailed solution</span>
-                <span className="text-lg text-muted transition-transform group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <div className="space-y-4 border-t border-border p-5">
-                <ol className="space-y-2">
-                  {ch.solution.explanation.map((step, i) => (
-                    <li
-                      key={i}
-                      className="flex gap-3 text-sm leading-relaxed text-fg/90"
-                    >
-                      <span className="font-medium text-accent">{i + 1}.</span>
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ol>
-                <CodeBlock
-                  code={ch.solution.code}
-                  filename="one working solution"
-                  language={ch.language}
-                />
-              </div>
-            </details>
+            <SolutionReveal
+              slug={slug}
+              challengeId={ch.id}
+              explanation={ch.solution.explanation}
+              code={ch.solution.code}
+              language={ch.language}
+            />
           )}
         </div>
       ),

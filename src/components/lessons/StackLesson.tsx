@@ -4,6 +4,10 @@ import { useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { BreakTheStack } from "./BreakTheStack";
 import { StartPlayerCard } from "@/components/StartPlayerCard";
+import { OpsCosts, UsesGrid } from "./FactsPanel";
+import { DS_FACTS } from "@/lib/ds-facts";
+
+const FACTS = DS_FACTS["stack-smashing"];
 import { GhostDemo } from "./interactives/GhostDemo";
 import { RedactionDemo } from "./interactives/RedactionDemo";
 import { ReplayDemo } from "./interactives/ReplayDemo";
@@ -78,6 +82,30 @@ export function StackLesson() {
         <div className="mt-4">
           <StackVisualizer />
         </div>
+      </div>
+
+      {/* How fast is it? */}
+      <h3 className="mt-10 text-xl font-semibold tracking-tight text-fg">
+        How fast is it?
+      </h3>
+      <p className="mt-2 leading-relaxed text-muted">
+        A stack&apos;s discipline is exactly what makes it fast:{" "}
+        <span className="font-mono text-accent">O(1)</span>{" "}
+        means the cost is the same whether it holds 10 items or 10 million.
+      </p>
+      <div className="mt-5">
+        <OpsCosts ops={FACTS.ops} />
+      </div>
+
+      {/* Where you've met one */}
+      <h3 className="mt-10 text-xl font-semibold tracking-tight text-fg">
+        Where you&apos;ve already met one
+      </h3>
+      <p className="mt-2 leading-relaxed text-muted">
+        Once you know the shape, you&apos;ll spot stacks everywhere:
+      </p>
+      <div className="mt-5">
+        <UsesGrid uses={FACTS.uses} />
       </div>
 
       {/* In code */}

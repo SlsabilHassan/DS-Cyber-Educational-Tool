@@ -1,22 +1,37 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { Mascot } from "@/components/Mascot";
-import { isSolved, onProgressChange } from "@/lib/progress";
+import { isSolved, isChallengeDone, onProgressChange } from "@/lib/progress";
 
 export type LessonStep = {
   title?: string;
   sudo?: string; // what Sudo says on this step
   content: ReactNode;
   wide?: boolean; // widen the card — side-by-side code and embedded editors need the room
-  gate?: { slug: string; challengeId: string }; // Continue locks until this challenge is solved
+  gate?: { slug: string; challengeId: string }; // Continue locks until this challenge is done
+  lock?: boolean; // Continue locks until the content calls useStepUnlock() (e.g. a quiz)
 };
+
+// Content inside a `lock`ed step (like a Quiz) calls this to open Continue.
+const StepUnlockContext = createContext<() => void>(() => {});
+export function useStepUnlock() {
+  return useContext(StepUnlockContext);
+}
 
 // A Brilliant-style stepped lesson: one screen at a time, a progress bar up
 // top, Sudo cheering from the corner, and a "Continue" button that walks you
-// through the steps to a completion screen. Steps with a `gate` keep Continue
-// locked until the challenge's tests pass — with a "Skip for now" escape hatch.
+// through the steps to a completion screen. Gated steps keep Continue locked
+// until the challenge is done — solved, or its solution revealed for the
+// truly stuck. Locked steps (quizzes) open when the content says so.
 export function LessonPlayer({
   steps,
   moduleSlug,
@@ -33,29 +48,49 @@ export function LessonPlayer({
   cta?: { href: string; label: string };
 }) {
   const [index, setIndex] = useState(0);
+  const [unlocked, setUnlocked] = useState<Set<number>>(new Set());
   const total = steps.length;
   const finished = index >= total;
   const step = finished ? null : steps[index];
   const xp = Math.min(index, total) * xpPerStep;
 
-  // Gating: a gated step keeps Continue locked until its challenge is solved.
-  // Solves land via markSolved() in the embedded workbench; we subscribe to
-  // the progress event so the lock opens the moment the tests go green.
+  // Challenge gating: solves land via markSolved() in the embedded workbench
+  // and reveals via the solution panel; we subscribe to the progress event so
+  // the lock opens the moment either happens.
   const gateSlug = step?.gate?.slug;
   const gateChallengeId = step?.gate?.challengeId;
-  const [gateSolved, setGateSolved] = useState(false);
+  const [gateState, setGateState] = useState<{ done: boolean; solved: boolean }>(
+    { done: false, solved: false },
+  );
   useEffect(() => {
     if (!gateSlug || !gateChallengeId) return;
-    const update = () => setGateSolved(isSolved(gateSlug, gateChallengeId));
+    const update = () =>
+      setGateState({
+        done: isChallengeDone(gateSlug, gateChallengeId),
+        solved: isSolved(gateSlug, gateChallengeId),
+      });
     update();
     return onProgressChange(update);
   }, [gateSlug, gateChallengeId]);
 
-  const locked = !!step?.gate && !gateSolved;
+  const unlockStep = useCallback(() => {
+    setUnlocked((prev) => {
+      if (prev.has(index)) return prev;
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  }, [index]);
+
+  const gateLocked = !!step?.gate && !gateState.done;
+  const quizLocked = !!step?.lock && !unlocked.has(index);
+  const locked = gateLocked || quizLocked;
   const sudoLine =
-    step?.gate && gateSolved
+    step?.gate && gateState.solved
       ? "Tests are green — through you go! 🎉"
-      : step?.sudo;
+      : step?.gate && gateState.done
+        ? "Solution studied. Onward — the next one's yours."
+        : step?.sudo;
   const widthClass = step?.wide ? "max-w-6xl" : "max-w-2xl";
 
   return (
@@ -107,8 +142,11 @@ export function LessonPlayer({
                       {step!.title}
                     </h2>
                   )}
-                  <div className="mt-4 space-y-4 leading-relaxed text-fg/90">
-                    {step!.content}
+                  {/* Keyed by step so interactive state never leaks between steps */}
+                  <div key={index} className="mt-4 space-y-4 leading-relaxed text-fg/90">
+                    <StepUnlockContext.Provider value={unlockStep}>
+                      {step!.content}
+                    </StepUnlockContext.Provider>
                   </div>
                 </div>
               </div>
@@ -138,25 +176,21 @@ export function LessonPlayer({
                   </button>
                 )}
                 {locked ? (
-                  <>
-                    <button
-                      onClick={() => setIndex((n) => n + 1)}
-                      className="rounded-full px-4 py-3 text-sm text-muted underline-offset-4 transition-colors hover:text-fg hover:underline"
-                    >
-                      Skip for now
-                    </button>
-                    <button
-                      disabled
-                      title="Pass the tests to continue"
-                      className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-surface-2 px-8 py-3.5 text-base font-semibold text-muted"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="5" y="11" width="14" height="9" rx="2" />
-                        <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                      </svg>
-                      Pass to continue
-                    </button>
-                  </>
+                  <button
+                    disabled
+                    title={
+                      gateLocked
+                        ? "Pass the tests — or reveal the solution — to continue"
+                        : "Answer the question to continue"
+                    }
+                    className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-surface-2 px-8 py-3.5 text-base font-semibold text-muted"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="5" y="11" width="14" height="9" rx="2" />
+                      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                    </svg>
+                    {gateLocked ? "Pass to continue" : "Answer to continue"}
+                  </button>
                 ) : (
                   <button
                     onClick={() => setIndex((n) => n + 1)}

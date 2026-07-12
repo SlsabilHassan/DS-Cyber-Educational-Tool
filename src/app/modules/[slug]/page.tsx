@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import { getModule, getAllModuleSlugs } from "@/lib/modules";
 import { NodesIcon } from "@/components/Icons";
 import { lessons } from "@/components/lessons";
-import { SolvedBadge } from "@/components/SolvedBadge";
 import { ModuleProgress } from "@/components/ModuleProgress";
 import { StartPlayerCard } from "@/components/StartPlayerCard";
+import { ChallengeList } from "@/components/ChallengeList";
 
 // Pre-render a static page for every module at build time.
 export function generateStaticParams() {
@@ -102,40 +102,15 @@ export default async function ModulePage({
             blurb="One challenge at a time — pass the tests to advance, with Sudo cheering."
           />
         </div>
-        <ul className="space-y-3">
-          {module.challenges.map((challenge, i) => (
-            <li key={challenge.id}>
-              <Link
-                href={`/modules/${module.slug}/${challenge.id}`}
-                className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-white/20 hover:bg-surface-2"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-sm text-muted">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <span className="font-medium text-fg transition-colors group-hover:text-accent">
-                      {challenge.name}
-                    </span>
-                    {challenge.vulnerability && (
-                      <span className="mt-0.5 block text-xs text-muted">
-                        {challenge.vulnerability}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <SolvedBadge slug={module.slug} challengeId={challenge.id} />
-                  {challenge.points != null && (
-                    <span className="rounded-full border border-border px-2.5 py-1 text-xs text-muted">
-                      {challenge.points} pts
-                    </span>
-                  )}
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <ChallengeList
+          slug={module.slug}
+          challenges={module.challenges.map((c) => ({
+            id: c.id,
+            name: c.name,
+            vulnerability: c.vulnerability,
+            points: c.points,
+          }))}
+        />
       </section>
     </div>
   );
