@@ -8,6 +8,7 @@ import { HeapInvariantDemo } from "./interactives/HeapInvariantDemo";
 export function HeapLesson() {
   return (
     <ModuleLesson
+      slug="heap-havoc"
       title="What's a heap (and a priority queue)?"
       intro={
         <>
@@ -68,7 +69,7 @@ print(heapq.heappop(pq))            # -> (1, "Scan") — most urgent first`}
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Validate priority values",
     analogy:
@@ -80,7 +81,7 @@ const CONCEPTS: Concept[] = [
     bad: `def update_priority(task, new_priority):
     task.priority = new_priority   # trusts any value`,
     good: `def update_priority(task, new_priority):
-    if new_priority < MIN_PRIORITY or new_priority > MAX_PRIORITY:
+    if not (MIN_PRIORITY <= new_priority <= MAX_PRIORITY):
         raise InvalidPriorityError
     task.priority = new_priority`,
     badCaption: "An out-of-range priority reorders the queue.",
@@ -117,7 +118,8 @@ return task`,
     bad: `def update_priority(user, task, new_priority):
     task.priority = new_priority   # any user, any priority`,
     good: `def update_priority(user, task, new_priority):
-    if new_priority > MAX_USER_PRIORITY and user.role != ADMIN:
+    if (user.role != ADMIN
+            and new_priority > MAX_USER_PRIORITY):
         raise AuthorizationError
     task.priority = new_priority`,
     badCaption: "Any user can escalate to the front.",

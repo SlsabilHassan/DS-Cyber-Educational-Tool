@@ -8,6 +8,7 @@ import { ArrayGhostDemo } from "./interactives/ArrayGhostDemo";
 export function ArrayLesson() {
   return (
     <ModuleLesson
+      slug="array-armory"
       title="What's an array?"
       intro={
         <>
@@ -64,7 +65,7 @@ print(data[1])          # -> "Bob"`}
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Validate the index before you write",
     analogy:
@@ -171,9 +172,11 @@ count -= 1`,
       "And returning the full backing store (not just the used portion) exposes stale, unused slots that may hold old secrets — return only the first `count` elements.",
     ],
     bad: `def export(self):
-    return self.data          # the real list — and all unused slots`,
+    # the real list — and all unused slots
+    return self.data`,
     good: `def export(self):
-    return list(self.data[:self.count])   # a copy of the active part`,
+    # a copy of the active part
+    return list(self.data[:self.count])`,
     badCaption: "Callers can mutate internals and read stale slots.",
     goodCaption: "A copy of just the active elements.",
     takeaway: "Expose copies of only the data that's actually in use.",

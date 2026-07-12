@@ -8,6 +8,7 @@ import { QueueDosDemo } from "./interactives/QueueDosDemo";
 export function QueueLesson() {
   return (
     <ModuleLesson
+      slug="queue-quarantine"
       title="What's a queue?"
       intro={
         <>
@@ -73,7 +74,7 @@ first = q.popleft()   # dequeue -> "job-1" (first in, first out)`}
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Check capacity before you write",
     analogy:

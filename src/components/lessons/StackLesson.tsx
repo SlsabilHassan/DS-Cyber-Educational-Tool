@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { BreakTheStack } from "./BreakTheStack";
+import { StartPlayerCard } from "@/components/StartPlayerCard";
 import { GhostDemo } from "./interactives/GhostDemo";
 import { RedactionDemo } from "./interactives/RedactionDemo";
 import { ReplayDemo } from "./interactives/ReplayDemo";
@@ -151,61 +152,26 @@ def welcome(n):
         is the heart of the module.
       </p>
 
+      <div className="mt-6">
+        <StartPlayerCard
+          href="/modules/stack-smashing/learn/patterns"
+          title="Prefer bite-sized?"
+          blurb="Walk these patterns one step at a time, with Sudo — or keep reading below."
+        />
+      </div>
+
       <div className="mt-8 space-y-14">
-        {CONCEPTS.map((c, i) => {
-          const Demo = c.demo ? DEMOS[c.demo] : null;
-          return (
-            <div key={c.title} id={`pattern-${i + 1}`} className="scroll-mt-24">
-              <h4 className="text-lg font-semibold text-fg">
-                <span className="mr-2 text-accent">{i + 1}.</span>
-                {c.title}
-              </h4>
-
-              <p className="mt-3 rounded-lg border-l-2 border-accent/40 bg-accent/5 px-3 py-2 text-sm leading-relaxed text-fg/80">
-                <span className="font-medium text-accent">Picture this: </span>
-                {c.analogy}
-              </p>
-
-              <div className="mt-3 space-y-3 leading-relaxed text-muted">
-                {c.explain.map((para, idx) => (
-                  <p key={idx}>{para}</p>
-                ))}
-              </div>
-
-              {Demo && (
-                <div className="mt-5 rounded-2xl border border-border bg-surface-2 p-5">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted">
-                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                    Try it
-                  </span>
-                  <div className="mt-4">
-                    <Demo />
-                  </div>
-                </div>
-              )}
-
-              {c.steps ? (
-                <div className="mt-5">
-                  <HowTo steps={c.steps} />
-                </div>
-              ) : c.bad && c.good ? (
-                <div className="mt-5">
-                  <CodeCompare
-                    bad={c.bad}
-                    good={c.good}
-                    badCaption={c.badCaption}
-                    goodCaption={c.goodCaption}
-                  />
-                </div>
-              ) : null}
-
-              <p className="mt-3 text-sm">
-                <span className="font-medium text-accent">Takeaway: </span>
-                <span className="text-muted">{c.takeaway}</span>
-              </p>
+        {CONCEPTS.map((c, i) => (
+          <div key={c.title} id={`pattern-${i + 1}`} className="scroll-mt-24">
+            <h4 className="text-lg font-semibold text-fg">
+              <span className="mr-2 text-accent">{i + 1}.</span>
+              {c.title}
+            </h4>
+            <div className="mt-3">
+              <PatternCard concept={c} />
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       {/* Glossary */}
@@ -311,8 +277,56 @@ function CodeCompare({
   );
 }
 
+// Renders one pattern (analogy → explanation → interactive → risky/safer code
+// → takeaway). Reused by the full lesson and by the stepped lesson player.
+export function PatternCard({ concept: c }: { concept: Concept }) {
+  const Demo = c.demo ? DEMOS[c.demo] : null;
+  return (
+    <div>
+      <p className="rounded-lg border-l-2 border-accent/40 bg-accent/5 px-3 py-2 text-sm leading-relaxed text-fg/80">
+        <span className="font-medium text-accent">Picture this: </span>
+        {c.analogy}
+      </p>
+      <div className="mt-3 space-y-3 leading-relaxed text-muted">
+        {c.explain.map((para, idx) => (
+          <p key={idx}>{para}</p>
+        ))}
+      </div>
+      {Demo && (
+        <div className="mt-5 rounded-2xl border border-border bg-surface-2 p-5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+            Try it
+          </span>
+          <div className="mt-4">
+            <Demo />
+          </div>
+        </div>
+      )}
+      {c.steps ? (
+        <div className="mt-5">
+          <HowTo steps={c.steps} />
+        </div>
+      ) : c.bad && c.good ? (
+        <div className="mt-5">
+          <CodeCompare
+            bad={c.bad}
+            good={c.good}
+            badCaption={c.badCaption}
+            goodCaption={c.goodCaption}
+          />
+        </div>
+      ) : null}
+      <p className="mt-4 text-sm">
+        <span className="font-medium text-accent">Takeaway: </span>
+        <span className="text-muted">{c.takeaway}</span>
+      </p>
+    </div>
+  );
+}
+
 // ── Content ───────────────────────────────────────────────────────────
-type Concept = {
+export type Concept = {
   title: string;
   analogy: string;
   explain: string[];
@@ -325,7 +339,7 @@ type Concept = {
   takeaway: string;
 };
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Check the size before you write",
     analogy:
@@ -498,7 +512,7 @@ type StackFrame = { id: number; value: string };
 
 const SUGGESTIONS = ["main()", "login()", "42", "🍕", "secret"];
 
-function StackVisualizer() {
+export function StackVisualizer() {
   const [items, setItems] = useState<StackFrame[]>([
     { id: 1, value: "main()" },
     { id: 2, value: "greet()" },

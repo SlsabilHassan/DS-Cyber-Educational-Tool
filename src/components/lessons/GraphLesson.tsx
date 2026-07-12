@@ -8,6 +8,7 @@ import { CycleTraversalDemo } from "./interactives/CycleTraversalDemo";
 export function GraphLesson() {
   return (
     <ModuleLesson
+      slug="graph-gauntlet"
       title="What's a graph?"
       intro={
         <>
@@ -65,7 +66,7 @@ export function GraphLesson() {
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Validate what you connect",
     analogy:
@@ -97,7 +98,8 @@ const CONCEPTS: Concept[] = [
     good: `def remove_node(graph, node_id):
     target = graph.nodes[node_id]
     for node in graph.nodes.values():
-        node.neighbors = [n for n in node.neighbors if n is not target]
+        node.neighbors = [n for n in node.neighbors
+                          if n is not target]
     del graph.nodes[node_id]`,
     badCaption: "Other nodes still point at the deleted one.",
     goodCaption: "Every edge to it is swept away first.",
@@ -134,7 +136,8 @@ const CONCEPTS: Concept[] = [
       "The fix is to check for the ID before inserting, and reject duplicates.",
     ],
     bad: `def add_node(graph, node_id, secret):
-    graph.nodes[node_id] = GraphNode(node_id, secret)   # overwrites`,
+    # overwrites whatever was there
+    graph.nodes[node_id] = GraphNode(node_id, secret)`,
     good: `def add_node(graph, node_id, secret):
     if node_id in graph.nodes:
         raise DuplicateNodeError

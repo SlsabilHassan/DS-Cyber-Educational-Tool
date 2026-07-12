@@ -121,7 +121,8 @@ export default async function ChallengePage({
       {/* Progressive hints */}
       {challenge.hints && challenge.hints.length > 0 && (
         <section className="mt-6">
-          <HintsPanel hints={challenge.hints} />
+          {/* Keyed so revealed hints reset when navigating between challenges */}
+          <HintsPanel key={challenge.id} hints={challenge.hints} />
         </section>
       )}
 
@@ -138,6 +139,7 @@ export default async function ChallengePage({
           </div>
           {challenge.tests ? (
             <ChallengeWorkbench
+              key={challenge.id}
               slug={module.slug}
               challengeId={challenge.id}
               starterCode={challenge.starterCode}
@@ -158,7 +160,10 @@ export default async function ChallengePage({
       {/* Detailed solution (hidden until asked for) */}
       {challenge.solution && (
         <section className="mt-10">
-          <details className="group rounded-xl border border-border bg-surface">
+          <details
+            key={challenge.id}
+            className="group rounded-xl border border-border bg-surface"
+          >
             <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-fg">
               <span>Stuck for good? Reveal the detailed solution</span>
               <span className="text-lg text-muted transition-transform group-open:rotate-45">

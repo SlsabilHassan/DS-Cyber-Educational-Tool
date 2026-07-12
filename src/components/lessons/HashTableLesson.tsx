@@ -8,6 +8,7 @@ import { KeyValidationDemo } from "./interactives/KeyValidationDemo";
 export function HashTableLesson() {
   return (
     <ModuleLesson
+      slug="hash-heist"
       title="What's a hash table?"
       intro={
         <>
@@ -64,7 +65,7 @@ print(table["alice"])            # O(1) lookup, no scanning`}
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Validate the bucket index",
     analogy:
@@ -74,9 +75,10 @@ const CONCEPTS: Concept[] = [
       "The fix is to confirm the bucket index is an integer inside [0, bucket_count) before writing.",
     ],
     bad: `def insert_entry(table, bucket_index, entry):
-    table.buckets[bucket_index].append(entry)   # trusts any index`,
+    # trusts any index
+    table.buckets[bucket_index].append(entry)`,
     good: `def insert_entry(table, bucket_index, entry):
-    if bucket_index < 0 or bucket_index >= len(table.buckets):
+    if not (0 <= bucket_index < len(table.buckets)):
         raise InvalidBucketError
     table.buckets[bucket_index].append(entry)`,
     badCaption: "A bad bucket index writes out of range.",
@@ -130,7 +132,8 @@ table.deleted_entries.append(removed)`,
     ],
     demo: KeyValidationDemo,
     bad: `def insert_entry(table, key, value):
-    table.bucket.append(HashEntry(key, value))   # any key, even duplicates`,
+    # any key, even duplicates
+    table.bucket.append(HashEntry(key, value))`,
     good: `def insert_entry(table, key, value):
     if not isinstance(key, str) or key == "":
         raise InvalidKeyError
@@ -152,7 +155,8 @@ table.deleted_entries.append(removed)`,
     ],
     demo: CollisionDemo,
     bad: `def insert_entry(table, key, value):
-    table.bucket.append(...)   # unbounded chain; unsynchronized rehash`,
+    # unbounded chain; unsynchronized rehash
+    table.bucket.append(...)`,
     good: `if len(table.bucket) >= MAX_CHAIN_LENGTH:
     raise BucketOverflowError
 # ...and for resizing:
@@ -171,7 +175,8 @@ with self.lock:
       "The fix is to flatten the buckets into a list of (key, value) pairs and skip internal marker entries.",
     ],
     bad: `def export(self):
-    return self.buckets   # empty slots + internal markers and all`,
+    # empty slots + internal markers and all
+    return self.buckets`,
     good: `def export(self):
     return [(e.key, e.value)
             for bucket in self.buckets

@@ -8,6 +8,7 @@ import { AclDemo } from "./interactives/AclDemo";
 export function TreeLesson() {
   return (
     <ModuleLesson
+      slug="tree-trojan"
       title="What's a tree?"
       intro={
         <>
@@ -66,7 +67,7 @@ root.children["docs"] = Node("docs")   # root branches to docs`}
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Confine traversal to the root",
     analogy:
@@ -137,7 +138,8 @@ const CONCEPTS: Concept[] = [
       "Both fixes are the same shape: check on the way in, and refuse before modifying the tree.",
     ],
     bad: `def insert_node(parent, child):
-    parent.children[child.name] = child   # overwrites / any type`,
+    # overwrites / accepts any type
+    parent.children[child.name] = child`,
     good: `def insert_node(parent, child):
     if child.name in parent.children:
         raise DuplicateNodeError

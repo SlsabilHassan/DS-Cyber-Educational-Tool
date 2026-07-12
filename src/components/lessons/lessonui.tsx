@@ -1,4 +1,5 @@
 import type { ComponentType, ReactNode } from "react";
+import { StartPlayerCard } from "@/components/StartPlayerCard";
 
 // Shared building blocks so every module lesson looks and reads exactly like
 // the Stack lesson: eyebrow → intro → hands-on hero → the "patterns" section
@@ -102,7 +103,57 @@ function Eyebrow({ children }: { children: ReactNode }) {
   );
 }
 
+// Renders one pattern (analogy → explanation → interactive → risky/safer code
+// → takeaway). Reused by the full lesson page and by the stepped players.
+export function ConceptCard({ concept: c }: { concept: Concept }) {
+  const Demo = c.demo;
+  return (
+    <div>
+      <p className="rounded-lg border-l-2 border-accent/40 bg-accent/5 px-3 py-2 text-sm leading-relaxed text-fg/80">
+        <span className="font-medium text-accent">Picture this: </span>
+        {c.analogy}
+      </p>
+
+      <div className="mt-3 space-y-3 leading-relaxed text-muted">
+        {c.explain.map((para, idx) => (
+          <p key={idx}>{para}</p>
+        ))}
+      </div>
+
+      {Demo && (
+        <div className="mt-5 rounded-2xl border border-border bg-surface-2 p-5">
+          <Eyebrow>Try it</Eyebrow>
+          <div className="mt-4">
+            <Demo />
+          </div>
+        </div>
+      )}
+
+      {c.steps ? (
+        <div className="mt-5">
+          <HowTo steps={c.steps} />
+        </div>
+      ) : c.bad && c.good ? (
+        <div className="mt-5">
+          <CodeCompare
+            bad={c.bad}
+            good={c.good}
+            badCaption={c.badCaption}
+            goodCaption={c.goodCaption}
+          />
+        </div>
+      ) : null}
+
+      <p className="mt-3 text-sm">
+        <span className="font-medium text-accent">Takeaway: </span>
+        <span className="text-muted">{c.takeaway}</span>
+      </p>
+    </div>
+  );
+}
+
 export function ModuleLesson({
+  slug,
   title,
   intro,
   tryIt,
@@ -111,6 +162,7 @@ export function ModuleLesson({
   glossary,
   closing,
 }: {
+  slug?: string; // when set, shows a "do it step by step" card before the patterns
   title: string;
   intro: ReactNode; // paragraphs under the title
   tryIt?: ReactNode; // optional hands-on hero block(s)
@@ -139,58 +191,28 @@ export function ModuleLesson({
       </h3>
       <p className="mt-2 leading-relaxed text-muted">{patternsIntro}</p>
 
+      {slug && (
+        <div className="mt-6">
+          <StartPlayerCard
+            href={`/modules/${slug}/learn/patterns`}
+            title="Prefer bite-sized?"
+            blurb="Walk these patterns one step at a time, with Sudo — or keep reading below."
+          />
+        </div>
+      )}
+
       <div className="mt-8 space-y-14">
-        {concepts.map((c, i) => {
-          const Demo = c.demo;
-          return (
-            <div key={c.title} id={`pattern-${i + 1}`} className="scroll-mt-24">
-              <h4 className="text-lg font-semibold text-fg">
-                <span className="mr-2 text-accent">{i + 1}.</span>
-                {c.title}
-              </h4>
-
-              <p className="mt-3 rounded-lg border-l-2 border-accent/40 bg-accent/5 px-3 py-2 text-sm leading-relaxed text-fg/80">
-                <span className="font-medium text-accent">Picture this: </span>
-                {c.analogy}
-              </p>
-
-              <div className="mt-3 space-y-3 leading-relaxed text-muted">
-                {c.explain.map((para, idx) => (
-                  <p key={idx}>{para}</p>
-                ))}
-              </div>
-
-              {Demo && (
-                <div className="mt-5 rounded-2xl border border-border bg-surface-2 p-5">
-                  <Eyebrow>Try it</Eyebrow>
-                  <div className="mt-4">
-                    <Demo />
-                  </div>
-                </div>
-              )}
-
-              {c.steps ? (
-                <div className="mt-5">
-                  <HowTo steps={c.steps} />
-                </div>
-              ) : c.bad && c.good ? (
-                <div className="mt-5">
-                  <CodeCompare
-                    bad={c.bad}
-                    good={c.good}
-                    badCaption={c.badCaption}
-                    goodCaption={c.goodCaption}
-                  />
-                </div>
-              ) : null}
-
-              <p className="mt-3 text-sm">
-                <span className="font-medium text-accent">Takeaway: </span>
-                <span className="text-muted">{c.takeaway}</span>
-              </p>
+        {concepts.map((c, i) => (
+          <div key={c.title} id={`pattern-${i + 1}`} className="scroll-mt-24">
+            <h4 className="text-lg font-semibold text-fg">
+              <span className="mr-2 text-accent">{i + 1}.</span>
+              {c.title}
+            </h4>
+            <div className="mt-3">
+              <ConceptCard concept={c} />
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       <h3 className="mt-12 text-xl font-semibold tracking-tight text-fg">

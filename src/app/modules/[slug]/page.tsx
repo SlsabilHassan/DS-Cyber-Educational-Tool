@@ -6,6 +6,7 @@ import { NodesIcon } from "@/components/Icons";
 import { lessons } from "@/components/lessons";
 import { SolvedBadge } from "@/components/SolvedBadge";
 import { ModuleProgress } from "@/components/ModuleProgress";
+import { StartPlayerCard } from "@/components/StartPlayerCard";
 
 // Pre-render a static page for every module at build time.
 export function generateStaticParams() {
@@ -67,6 +68,15 @@ export default async function ModulePage({
         {module.description}
       </p>
 
+      {/* Stepped, Brilliant-style lesson — learn the basics one step at a time */}
+      <div className="mt-8">
+        <StartPlayerCard
+          href={`/modules/${module.slug}/learn/basics`}
+          title="Learn the basics, step by step"
+          blurb="Bite-sized steps with Sudo — or just scroll and read it all below."
+        />
+      </div>
+
       {/* Learn-first lesson (if this module has one) */}
       {Lesson && (
         <div className="mt-10">
@@ -83,6 +93,13 @@ export default async function ModulePage({
           <ModuleProgress
             slug={module.slug}
             challengeIds={module.challenges.map((c) => c.id)}
+          />
+        </div>
+        <div className="mb-5">
+          <StartPlayerCard
+            href={`/modules/${module.slug}/learn/challenges`}
+            title="Do the challenges as a guided run"
+            blurb="One challenge at a time — pass the tests to advance, with Sudo cheering."
           />
         </div>
         <ul className="space-y-3">

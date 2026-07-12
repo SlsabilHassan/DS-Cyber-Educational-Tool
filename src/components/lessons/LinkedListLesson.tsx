@@ -8,6 +8,7 @@ import { TrustDemo } from "./interactives/TrustDemo";
 export function LinkedListLesson() {
   return (
     <ModuleLesson
+      slug="linked-labyrinth"
       title="What's a linked list?"
       intro={
         <>
@@ -69,7 +70,7 @@ a.next = Node("Bob")          # Alice -> Bob -> None`}
   );
 }
 
-const CONCEPTS: Concept[] = [
+export const CONCEPTS: Concept[] = [
   {
     title: "Validate a pointer before you trust it",
     analogy:
@@ -187,7 +188,8 @@ const CONCEPTS: Concept[] = [
       "And when a list is a hash chain (each node's hash depends on the previous), changing one node's data means every downstream hash must be recomputed — otherwise integrity checks silently break.",
     ],
     bad: `# leaks internals:
-{"user_id": .., "name": .., "owner": .., "memory_address": ..}
+{"user_id": .., "name": ..,
+ "owner": .., "memory_address": ..}
 
 # re-hashes only the changed node:
 node.hash = sha256(node.value + node.previous_hash)`,
