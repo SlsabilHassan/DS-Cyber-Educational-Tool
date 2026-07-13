@@ -108,7 +108,9 @@ export function buildChallengeSteps(
               </p>
             </div>
           )}
-          {ch.hints && ch.hints.length > 0 && <HintsPanel hints={ch.hints} />}
+          {ch.hints && ch.hints.length > 0 && (
+            <HintsPanel hints={ch.hints} slug={slug} challengeId={ch.id} />
+          )}
           <ChallengeWorkbench
             slug={slug}
             challengeId={ch.id}

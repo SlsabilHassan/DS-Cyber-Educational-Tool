@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { Mascot } from "@/components/Mascot";
 import { isSolved, isChallengeDone, onProgressChange } from "@/lib/progress";
+import { track } from "@/lib/analytics";
 
 export type LessonStep = {
   title?: string;
@@ -81,6 +82,21 @@ export function LessonPlayer({
       return next;
     });
   }, [index]);
+
+  // Advance a step, logging what was just completed (and the finish event).
+  const advance = useCallback(() => {
+    const finishingStep = steps[index];
+    track("lesson_step", {
+      module: moduleSlug,
+      stepIndex: index,
+      stepTitle: finishingStep?.title,
+      total,
+    });
+    if (index === total - 1) {
+      track("lesson_complete", { module: moduleSlug, steps: total });
+    }
+    setIndex((n) => n + 1);
+  }, [index, steps, moduleSlug, total]);
 
   const gateLocked = !!step?.gate && !gateState.done;
   const quizLocked = !!step?.lock && !unlocked.has(index);
@@ -193,7 +209,7 @@ export function LessonPlayer({
                   </button>
                 ) : (
                   <button
-                    onClick={() => setIndex((n) => n + 1)}
+                    onClick={advance}
                     className="rounded-full bg-accent px-8 py-3.5 text-base font-semibold text-bg transition-opacity hover:opacity-90"
                   >
                     {index === total - 1 ? "Finish" : "Continue"}

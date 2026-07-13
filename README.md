@@ -56,6 +56,16 @@ Eight data-structure modules are fully built — each with an interactive lesson
 
 When a learner clicks **Run tests**, the app lazy-loads [Pyodide](https://pyodide.org/) (a full CPython interpreter compiled to WebAssembly). It executes the learner's edited code together with a test harness and reports pass/fail per test — all without a server. The first run downloads the runtime (~10 MB, cached afterward); subsequent runs are instant.
 
+## Research data collection
+
+As an educational research project, the app can log **anonymous learning events** — challenge attempts (pass/fail), hint and solution reveals, quiz answers, lesson-step completion, and page views — to Supabase for analysis. It is:
+
+- **Consent-gated.** Nothing is recorded until the visitor accepts a consent banner; declining keeps everything local, exactly as before.
+- **Privacy-preserving.** Events carry a random per-browser id (and the account id if signed in), never names or message contents. Learners can't read others' events (Row Level Security allows insert-only).
+- **Non-blocking.** Logging is fire-and-forget and can never break the learning experience.
+
+To enable it, run [`supabase/schema.sql`](supabase/schema.sql) once in the Supabase SQL editor (it creates the `learning_events` table + policies and includes example analysis queries). Aggregate traffic is also collected via [Vercel Web Analytics](https://vercel.com/docs/analytics).
+
 ---
 
 ## Getting started

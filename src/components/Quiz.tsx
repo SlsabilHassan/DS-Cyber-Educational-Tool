@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useStepUnlock } from "@/components/lessons/LessonPlayer";
+import { track } from "@/lib/analytics";
 
 export type QuizOption = {
   text: string;
@@ -33,6 +34,11 @@ export function Quiz({
   function pick(i: number) {
     if (done) return;
     setPicked((prev) => new Set(prev).add(i));
+    track("quiz_answer", {
+      question,
+      choice: options[i].text,
+      correct: !!options[i].correct,
+    });
     if (options[i].correct) {
       setSolved(true);
       unlock();
@@ -41,6 +47,7 @@ export function Quiz({
 
   function reveal() {
     setRevealed(true);
+    track("quiz_reveal", { question });
     unlock();
   }
 

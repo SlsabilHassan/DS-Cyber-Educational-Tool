@@ -5,6 +5,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
+import { ResearchConsent } from "@/components/ResearchConsent";
+import { RouteTracker } from "@/components/RouteTracker";
 import { SITE } from "@/lib/site";
 
 const geistSans = Geist({
@@ -40,6 +42,8 @@ export default function RootLayout({
           <Header />
           <main className="w-full flex-1">{children}</main>
           <Footer />
+          <ResearchConsent />
+          <RouteTracker />
         </AuthProvider>
         <Analytics />
       </body>

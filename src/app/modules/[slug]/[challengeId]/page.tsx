@@ -134,7 +134,12 @@ export default async function ChallengePage({
       {challenge.hints && challenge.hints.length > 0 && (
         <section className="mt-6">
           {/* Keyed so revealed hints reset when navigating between challenges */}
-          <HintsPanel key={challenge.id} hints={challenge.hints} />
+          <HintsPanel
+            key={challenge.id}
+            hints={challenge.hints}
+            slug={module.slug}
+            challengeId={challenge.id}
+          />
         </section>
       )}
 

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { runTests } from "@/lib/pyodide";
 import { markSolved, isSolved } from "@/lib/progress";
+import { track } from "@/lib/analytics";
 
 type Props = {
   slug: string;
@@ -52,13 +53,25 @@ export function ChallengeWorkbench({
       setOutput(res.lines);
       setSummary({ passed: res.passed, failed: res.failed });
       setPhase("done");
-      if (res.failed === 0 && res.passed > 0) {
+      const passed = res.failed === 0 && res.passed > 0;
+      track("challenge_attempt", {
+        module: slug,
+        challengeId,
+        passed,
+        testsPassed: res.passed,
+        testsFailed: res.failed,
+        edited: code !== starterCode,
+      });
+      if (passed) {
+        const firstTime = !isSolved(slug, challengeId);
         markSolved(slug, challengeId);
         setSolved(true);
+        if (firstTime) track("challenge_solved", { module: slug, challengeId });
       }
     } catch (e) {
       setErrorMsg(e instanceof Error ? e.message : String(e));
       setPhase("done");
+      track("challenge_error", { module: slug, challengeId });
     }
   }
 

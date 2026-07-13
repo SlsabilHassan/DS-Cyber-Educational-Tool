@@ -1,11 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 
 // Reveals hints one at a time so learners can take the smallest nudge they
 // need instead of seeing the whole answer at once.
-export function HintsPanel({ hints }: { hints: string[] }) {
+export function HintsPanel({
+  hints,
+  slug,
+  challengeId,
+}: {
+  hints: string[];
+  slug?: string;
+  challengeId?: string;
+}) {
   const [revealed, setRevealed] = useState(0);
+
+  function revealNext() {
+    setRevealed((n) => {
+      track("hint_reveal", {
+        module: slug,
+        challengeId,
+        hintIndex: n, // the hint about to be shown (0-based)
+      });
+      return n + 1;
+    });
+  }
 
   if (hints.length === 0) return null;
 
@@ -47,7 +67,7 @@ export function HintsPanel({ hints }: { hints: string[] }) {
 
       {!allShown && (
         <button
-          onClick={() => setRevealed((n) => n + 1)}
+          onClick={revealNext}
           className="mt-4 rounded-full border border-border px-4 py-2 text-sm text-fg transition-colors hover:border-accent hover:bg-white/5"
         >
           {revealed === 0

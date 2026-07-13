@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { setAnalyticsUser } from "@/lib/analytics";
 
 type AuthContextValue = {
   user: User | null;
@@ -33,13 +34,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    // Load any existing session, then subscribe to changes.
+    // Load any existing session, then subscribe to changes. Keep the
+    // analytics layer's current-user id in sync so events are attributed.
     supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
+      const u = data.session?.user ?? null;
+      setUser(u);
+      setAnalyticsUser(u?.id ?? null);
       setLoading(false);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const u = session?.user ?? null;
+      setUser(u);
+      setAnalyticsUser(u?.id ?? null);
     });
     return () => sub.subscription.unsubscribe();
   }, []);

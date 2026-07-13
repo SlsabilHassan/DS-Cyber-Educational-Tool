@@ -2,6 +2,7 @@
 
 import { CodeBlock } from "@/components/CodeBlock";
 import { markRevealed } from "@/lib/progress";
+import { track } from "@/lib/analytics";
 
 // The "Stuck for good?" panel. Opening it records the reveal, which counts
 // as finishing the challenge for unlocking purposes (though not as a solve)
@@ -23,7 +24,10 @@ export function SolutionReveal({
     <details
       className="group rounded-xl border border-border bg-surface"
       onToggle={(e) => {
-        if (e.currentTarget.open) markRevealed(slug, challengeId);
+        if (e.currentTarget.open) {
+          markRevealed(slug, challengeId);
+          track("solution_reveal", { module: slug, challengeId });
+        }
       }}
     >
       <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-fg">
