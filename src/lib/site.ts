@@ -17,7 +17,7 @@ export type NavItem = { label: string; href: string };
 // Primary navigation (left side of the header).
 export const NAV: NavItem[] = [
   { label: "Modules", href: "/modules" },
-  { label: "Workspace", href: "/workspace" },
+  { label: "Leaderboard", href: "/leaderboard" },
   { label: "Help", href: "/help" },
   { label: "Chat", href: "/chat" },
   { label: "Search", href: "/search" },

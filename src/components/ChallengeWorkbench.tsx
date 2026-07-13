@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { runTests } from "@/lib/pyodide";
 import { markSolved, isSolved } from "@/lib/progress";
 import { track } from "@/lib/analytics";
+import { syncMyProfile } from "@/lib/leaderboard";
 
 type Props = {
   slug: string;
@@ -66,7 +67,10 @@ export function ChallengeWorkbench({
         const firstTime = !isSolved(slug, challengeId);
         markSolved(slug, challengeId);
         setSolved(true);
-        if (firstTime) track("challenge_solved", { module: slug, challengeId });
+        if (firstTime) {
+          track("challenge_solved", { module: slug, challengeId });
+          void syncMyProfile(); // update leaderboard stats (no-op if signed out)
+        }
       }
     } catch (e) {
       setErrorMsg(e instanceof Error ? e.message : String(e));
