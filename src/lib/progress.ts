@@ -60,6 +60,30 @@ export function markRevealed(slug: string, challengeId: string): void {
   window.dispatchEvent(new Event(EVENT));
 }
 
+// ── Bulk access, for syncing with the account ─────────────────────────
+export function getSolvedKeys(): string[] {
+  return [...getSolvedSet()];
+}
+export function getRevealedKeys(): string[] {
+  return [...getRevealedSet()];
+}
+
+// Union incoming keys into local progress (never removes anything) and fire
+// one change event. Used when merging a signed-in account's saved progress.
+export function mergeProgress(solved: string[], revealed: string[]): void {
+  if (typeof window === "undefined") return;
+  const s = getSolvedSet();
+  const r = getRevealedSet();
+  const beforeS = s.size;
+  const beforeR = r.size;
+  solved.forEach((k) => s.add(k));
+  revealed.forEach((k) => r.add(k));
+  if (s.size === beforeS && r.size === beforeR) return; // nothing new
+  window.localStorage.setItem(KEY, JSON.stringify([...s]));
+  window.localStorage.setItem(REVEALED_KEY, JSON.stringify([...r]));
+  window.dispatchEvent(new Event(EVENT));
+}
+
 // Solved or solution revealed — either way the learner may move on.
 export function isChallengeDone(slug: string, challengeId: string): boolean {
   const key = challengeKey(slug, challengeId);

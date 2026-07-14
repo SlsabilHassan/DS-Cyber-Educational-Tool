@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
@@ -38,12 +38,37 @@ export function Header() {
   const pathname = usePathname();
   const { user, loading, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
 
+  // Close the mobile menu whenever the route changes.
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   return (
     <header className="sticky top-0 z-50 px-4 pt-4">
-      <div className="mx-auto flex max-w-5xl items-center gap-6 rounded-full border border-border bg-surface/70 px-4 py-2 backdrop-blur-xl">
+      <div className="relative mx-auto flex max-w-5xl items-center gap-6 rounded-full border border-border bg-surface/70 px-4 py-2 backdrop-blur-xl">
+        {/* Hamburger (mobile only) */}
+        <button
+          onClick={() => setMobileOpen((o) => !o)}
+          aria-label="Menu"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-white/5 hover:text-fg md:hidden"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            {mobileOpen ? (
+              <path d="M6 6l12 12M18 6L6 18" />
+            ) : (
+              <>
+                <path d="M4 7h16" />
+                <path d="M4 12h16" />
+                <path d="M4 17h16" />
+              </>
+            )}
+          </svg>
+        </button>
+
         <Logo />
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -151,6 +176,35 @@ export function Header() {
             </>
           )}
         </div>
+
+        {/* Mobile dropdown menu */}
+        {mobileOpen && (
+          <div className="absolute inset-x-0 top-full mt-2 md:hidden">
+            <nav className="mx-auto flex max-w-5xl flex-col gap-1 rounded-2xl border border-border bg-surface p-2 shadow-xl">
+              {NAV.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-xl px-4 py-3 text-sm transition-colors ${
+                    isActive(item.href)
+                      ? "bg-white/5 text-fg"
+                      : "text-muted hover:bg-white/5 hover:text-fg"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              {!loading && !user && (
+                <Link
+                  href="/login"
+                  className="rounded-xl px-4 py-3 text-sm text-muted transition-colors hover:bg-white/5 hover:text-fg"
+                >
+                  Login
+                </Link>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );

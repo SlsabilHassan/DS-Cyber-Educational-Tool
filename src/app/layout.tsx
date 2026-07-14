@@ -7,6 +7,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { ResearchConsent } from "@/components/ResearchConsent";
 import { RouteTracker } from "@/components/RouteTracker";
+import { ProgressSync } from "@/components/ProgressSync";
 import { SITE } from "@/lib/site";
 
 const geistSans = Geist({
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Footer />
           <ResearchConsent />
           <RouteTracker />
+          <ProgressSync />
         </AuthProvider>
         <Analytics />
       </body>

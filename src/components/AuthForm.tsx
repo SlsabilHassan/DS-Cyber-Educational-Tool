@@ -199,6 +199,17 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           </button>
         </div>
 
+        {isLogin && (
+          <div className="text-right">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-muted transition-colors hover:text-fg"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        )}
+
         {/* Strength meter + checklist (register only, once typing) */}
         {!isLogin && password.length > 0 && (
           <div className="rounded-lg border border-border bg-surface-2 p-3">
