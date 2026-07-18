@@ -10,7 +10,6 @@ export default function PreTestPage() {
       phase="pre"
       form="A"
       items={PRE_ITEMS}
-      title="Pre-test"
       cta={{ href: "/modules", label: "Go to the modules" }}
     />
   );

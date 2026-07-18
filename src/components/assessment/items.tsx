@@ -79,18 +79,16 @@ export function OrderView({
   const [seq, setSeq] = useState<number[]>([]); // original indices, in chosen order
 
   function toggle(origIdx: number) {
-    setSeq((prev) => {
-      const next = prev.includes(origIdx)
-        ? prev.filter((x) => x !== origIdx)
-        : [...prev, origIdx];
-      if (next.length === item.steps.length) {
-        const correct = next.every((v, i) => v === i);
-        onAnswer({ order: next }, correct);
-      } else {
-        onAnswer({ order: next }, null); // incomplete → not yet answerable
-      }
-      return next;
-    });
+    const next = seq.includes(origIdx)
+      ? seq.filter((x) => x !== origIdx)
+      : [...seq, origIdx];
+    setSeq(next);
+    // Report from the event handler (not inside a state updater).
+    if (next.length === item.steps.length) {
+      onAnswer({ order: next }, next.every((v, i) => v === i));
+    } else {
+      onAnswer({ order: next }, null); // incomplete → not yet answerable
+    }
   }
 
   return (

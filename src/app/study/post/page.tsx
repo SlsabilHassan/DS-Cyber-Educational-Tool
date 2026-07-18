@@ -10,7 +10,6 @@ export default function PostTestPage() {
       phase="post"
       form="B"
       items={[...POST_ITEMS, ...EXPERIENCE_ITEMS]}
-      title="Post-test"
       cta={{ href: "/", label: "Finish" }}
     />
   );

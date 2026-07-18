@@ -7,6 +7,8 @@ import { lessons } from "@/components/lessons";
 import { ModuleProgress } from "@/components/ModuleProgress";
 import { StartPlayerCard } from "@/components/StartPlayerCard";
 import { ChallengeList } from "@/components/ChallengeList";
+import { ModuleStudyFlow } from "@/components/assessment/ModuleStudyFlow";
+import { getModuleAssessment } from "@/lib/module-assessments";
 
 // Pre-render a static page for every module at build time.
 export function generateStaticParams() {
@@ -68,8 +70,17 @@ export default async function ModulePage({
         {module.description}
       </p>
 
+      {/* Research flow: pre-test prompt on open, post-test after the last challenge */}
+      {getModuleAssessment(module.slug) && (
+        <ModuleStudyFlow
+          slug={module.slug}
+          moduleTitle={module.title}
+          challengeIds={module.challenges.map((c) => c.id)}
+        />
+      )}
+
       {/* Stepped, Brilliant-style lesson — learn the basics one step at a time */}
-      <div className="mt-8">
+      <div id="start" className="mt-8 scroll-mt-24">
         <StartPlayerCard
           href={`/modules/${module.slug}/learn/basics`}
           title="Learn the basics, step by step"

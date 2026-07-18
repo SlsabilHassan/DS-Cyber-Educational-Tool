@@ -8,6 +8,7 @@ import {
   type AssessmentItem,
   type Phase,
 } from "@/lib/assessment";
+import { markPretestDone, markPosttestDone } from "@/lib/study-flow";
 import {
   ChoiceView,
   OrderView,
@@ -25,13 +26,13 @@ export function Assessment({
   phase,
   form,
   items,
-  title,
+  moduleSlug,
   cta,
 }: {
   phase: Phase;
   form: string;
   items: AssessmentItem[];
-  title: string;
+  moduleSlug?: string; // when set, marks this module's pre/post test done on finish
   cta: { href: string; label: string };
 }) {
   const [index, setIndex] = useState(0);
@@ -52,6 +53,13 @@ export function Assessment({
     setAnswer(null);
     setConfidence(null);
   }, [index]);
+
+  // On completion, record that this module's pre/post test is done.
+  useEffect(() => {
+    if (!finished || !moduleSlug) return;
+    if (phase === "pre") markPretestDone(moduleSlug);
+    if (phase === "post") markPosttestDone(moduleSlug);
+  }, [finished, moduleSlug, phase]);
 
   const onAnswer: AnswerFn = (response, correct) =>
     setAnswer({ response, correct });

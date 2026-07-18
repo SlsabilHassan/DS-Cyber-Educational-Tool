@@ -18,15 +18,19 @@ export function setAnalyticsUser(userId: string | null) {
 
 export type ConsentState = "unset" | "granted" | "declined";
 
+// Consent is stored in sessionStorage — so it is asked again every time the
+// site is opened fresh (a new tab/visit), for every visitor including
+// signed-in ones. The device_id below stays in localStorage, so a
+// participant's pre- and post-tests still pair across sessions.
 export function getConsent(): ConsentState {
   if (typeof window === "undefined") return "unset";
-  const v = window.localStorage.getItem(CONSENT_KEY);
+  const v = window.sessionStorage.getItem(CONSENT_KEY);
   return v === "granted" || v === "declined" ? v : "unset";
 }
 
 export function setConsent(state: "granted" | "declined") {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(CONSENT_KEY, state);
+  window.sessionStorage.setItem(CONSENT_KEY, state);
   window.dispatchEvent(new Event(CONSENT_EVENT));
   // Record the consent decision itself (only sends if granted).
   track("consent", { granted: state === "granted" });

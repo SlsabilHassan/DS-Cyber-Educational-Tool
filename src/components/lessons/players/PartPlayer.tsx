@@ -30,6 +30,7 @@ import { arrayIntroSteps } from "./intros/array";
 import { hashTableIntroSteps } from "./intros/hashtable";
 import { heapIntroSteps } from "./intros/heap";
 import { getModule } from "@/lib/modules";
+import { getModuleAssessment } from "@/lib/module-assessments";
 import type { LessonPart } from "@/lib/lesson-parts";
 
 // Per-module ingredients: the authored intro steps, the pattern cards, and
@@ -128,14 +129,21 @@ export function PartPlayer({
         },
       };
     }
+    // After the last challenge, send them to the post-test (if the module has
+    // one) to complete the research flow.
+    const hasAssessment = !!getModuleAssessment(slug);
     return {
       steps: [
         challengesIntroStep(),
         ...buildChallengeSteps(slug, module.challenges),
       ],
       completeTitle: "Module complete! 🎉",
-      completeMessage: "Every fix shipped. Sudo salutes you.",
-      cta: { href: `/modules/${slug}`, label: `Back to ${module.title}` },
+      completeMessage: hasAssessment
+        ? "Every fix shipped. One last step: the anonymous post-test."
+        : "Every fix shipped. Sudo salutes you.",
+      cta: hasAssessment
+        ? { href: `/modules/${slug}/posttest`, label: "Take the post-test →" }
+        : { href: `/modules/${slug}`, label: `Back to ${module.title}` },
     };
   }, [slug, part]);
 
