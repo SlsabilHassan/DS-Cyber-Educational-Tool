@@ -52,6 +52,18 @@ function stableId(storage: Storage, key: string): string {
   return id;
 }
 
+// The anonymous ids for research records (device survives sessions, session
+// is per-visit). Returns null before consent or on the server — callers must
+// treat null as "don't record". Reused by the pre/post assessment.
+export function getResearchIds(): { deviceId: string; sessionId: string } | null {
+  if (typeof window === "undefined") return null;
+  if (getConsent() !== "granted") return null;
+  return {
+    deviceId: stableId(window.localStorage, DEVICE_KEY),
+    sessionId: stableId(window.sessionStorage, SESSION_KEY),
+  };
+}
+
 export type EventPayload = {
   module?: string;
   challengeId?: string;
