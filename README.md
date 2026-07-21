@@ -1,5 +1,7 @@
 # Hacky Stacky
 
+[![CI](https://github.com/SlsabilHassan/DS-Cyber-Educational-Tool/actions/workflows/ci.yml/badge.svg)](https://github.com/SlsabilHassan/DS-Cyber-Educational-Tool/actions/workflows/ci.yml)
+
 Still building ⚠️
 Try it here: https://ds-cyber-educational-tool.vercel.app/
 
