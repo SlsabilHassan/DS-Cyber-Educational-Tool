@@ -5,6 +5,7 @@
 import { supabase } from "@/lib/supabase";
 import { getSolvedSet, challengeKey } from "@/lib/progress";
 import { modules } from "@/lib/modules";
+import { nextStreak as computeNextStreak } from "@/lib/streak";
 
 export type LeaderRow = {
   handle: string;
@@ -47,11 +48,7 @@ function todayStr(): string {
 }
 
 function nextStreak(prevDate: string | null, prevStreak: number): number {
-  const today = todayStr();
-  if (prevDate === today) return prevStreak || 1; // already counted today
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-  if (prevDate === yesterday) return (prevStreak || 0) + 1; // consecutive day
-  return 1; // streak broken (or first ever)
+  return computeNextStreak(prevDate, prevStreak, todayStr());
 }
 
 async function currentUserId(): Promise<string | null> {

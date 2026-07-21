@@ -84,7 +84,17 @@ npm run build
 
 # serve the production build
 npm run start
+
+# run the test suite (Vitest unit tests + 64-challenge integrity suite)
+npm test
 ```
+
+## Testing
+
+A [Vitest](https://vitest.dev/) suite runs in CI (GitHub Actions) on every push:
+
+- **Unit tests** for the core logic — sequential challenge unlocking, cross-device progress merging, day-streak math, and leaderboard stat computation.
+- **A 64-challenge integrity suite** — every challenge's starter code is run through its own autograder harness under CPython (mirroring the in-browser Pyodide runner), asserting each challenge is well-formed and that its tests actually detect the intended vulnerability. This prevents content regressions across all 8 modules.
 
 ### Environment variables (optional)
 
